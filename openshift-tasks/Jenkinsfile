@@ -138,7 +138,7 @@ podTemplate(
         //      Make sure the application is running and ready before proceeding
         script{ openshift.withCluster() { openshift.withProject("${GUID}-tasks-prod") {
           def route = openshift.selector("route", "tasks").object()
-          activeApp = = "${route.spec.to.name}"
+          activeApp = "${route.spec.to.name}"
   
           echo "current active app: ${activeApp}"
           if(activeApp == "tasks-green") {
