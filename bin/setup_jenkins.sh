@@ -1,6 +1,6 @@
 #!/bin/bash
 # Setup Jenkins Project
-set -x
+# set -x
 if [ "$#" -ne 3 ]; then
     echo "Usage:"
     echo "  $0 GUID REPO CLUSTER"
