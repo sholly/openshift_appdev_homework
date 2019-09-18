@@ -1,5 +1,6 @@
 #!/bin/bash
 # Setup Jenkins Project
+set -x
 if [ "$#" -ne 3 ]; then
     echo "Usage:"
     echo "  $0 GUID REPO CLUSTER"
@@ -17,7 +18,7 @@ echo "Setting up Jenkins in project ${GUID}-jenkins from Git Repo ${REPO} for Cl
 # Mine
 # oc new-project ${GUID}-jenkins
 oc new-app jshollen-jenkins --param ENABLE_OAUTH=true --param MEMORY_LIMIT=2Gi --param VOLUME_CAPACITY=4Gi --param DISABLE_ADMINISTRATIVE_MONITORS=true -n "${GUID}-jenkins"
-oc set resources dc jenkins --limits=memory=2Gi,cpu=2 --requests=memory=1Gi,cpu=1
+# oc set resources dc jenkins --limits=memory=2Gi,cpu=2 --requests=memory=1Gi,cpu=1
 
 # Create custom agent container image with skopeo
 # TBD
