@@ -114,9 +114,12 @@ podTemplate(
             while (rc.spec.replicas != rc.status.readyReplicas) {
               sleep 5
               rc = openshift.selector("rc", "tasks-${dc_version}").object()
+              echo "rc: " + rc
             }
-            def tasksRoute = sh(returnStdout: true, script: "curl tasks-${GUID}-tasks-dev.apps.${CLUSTER}").trim()
-            echo "tasksRoute: " + task
+            script {
+              def tasksRoute = sh(returnStdout: true, script: "curl tasks-${GUID}-tasks-dev.apps.${CLUSTER}").trim()
+              echo "tasksRoute: " + tasksRoute
+            }
           }
         }
       }
