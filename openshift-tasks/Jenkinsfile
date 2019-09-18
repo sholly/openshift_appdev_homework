@@ -97,8 +97,9 @@ podTemplate(
   
             //OpenShift 3:
             openshift.set("image", "dc/tasks", "tasks=docker-registry.default.svc:5000/${GUID}-tasks-dev/tasks:${devTag}")
-            openshift.selector('configmap', 'tasks-config').delete()
+            openshift.selector('configmap', 'tasks-config').delete("--ignore-not-found=true")
             def configmap = openshift.create('configmap', 'tasks-config', '--from-file=./configuration/application-users.properties', '--from-file=./configuration/application-roles.properties' )
+
             openshift.selector("dc", "tasks").rollout().latest();
             def dc = openshift.selector("dc", "tasks").object()
             def dc_version = dc.status.latestVersion
@@ -117,9 +118,14 @@ podTemplate(
       stage('Copy Image to Nexus container registry') {
         echo "Copy image to Nexus container registry"
 
-        // TBD: Copy image to Nexus container registry
-
-        // TBD: Tag the built image with the production tag.
+        // Copy image to Nexus container registry
+        sh "skopeo copy --src-tls-verify=false --dest-tls-verify=false --src-creds openshift:\$(oc whoami -t) --dest-creds admin:redhat docker://docker-registry-default.apps.${CLUSTER}/${GUID}-tasks-dev/tasks:${devTag} docker://nexus-registry-gpte-hw-cicd.apps.na311.openshift.opentlc.com/tasks:${devTag}"
+        // Tag the built image with the production tag.
+        script{ openshift.withCluster() {
+          openshift.withProject("${GUID}-tasks-dev") {
+            openshift.tag("${GUID}-tasks-dev/tasks:${devTag}", "${GUID}-tasks-dev/tasks:${prodTag}")
+          }
+        }}
       }
 
       // Blue/Green Deployment into Production
