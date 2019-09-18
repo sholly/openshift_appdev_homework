@@ -57,8 +57,9 @@ podTemplate(
         sonarQube: {
            echo "Running Code Analysis"
           //Execute Sonarqube Tests
-          // sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube-gpte-hw-cicd.apps.na311.openshift.opentlc.com -Dsonar.projectName=${JOB_BASE_NAME} -Dsonar.projectVersion=${devTag}"
-          sh "${mvnCmd} clean test"
+          sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube-gpte-hw-cicd.apps.na311.openshift.opentlc.com -Dsonar.projectName=${JOB_BASE_NAME} -Dsonar.projectVersion=${devTag}"
+          // Sonar was not working last night
+          // sh "${mvnCmd} clean test"
         }
       )}
 
