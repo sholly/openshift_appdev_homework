@@ -59,7 +59,7 @@ podTemplate(
         sonarQube: {
            echo "Running Code Analysis"
           //Execute Sonarqube Tests
-          sh "${mvnCmd} sonar:sonar -Dsonar.host.url=sonarqube.gpte-hw-cicd.svc.cluster.local:9000 -Dsonar.projectName=${JOB_BASE_NAME} -Dsonar.projectVersion=${devTag}"
+          sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube.gpte-hw-cicd.svc.cluster.local:9000 -Dsonar.projectName=${JOB_BASE_NAME} -Dsonar.projectVersion=${devTag}"
           // Sonar was not working last night
           // sh "${mvnCmd} clean test"
         }, failFast: true
@@ -116,7 +116,7 @@ podTemplate(
               rc = openshift.selector("rc", "tasks-${dc_version}").object()
             }
             def tasksRoute = sh(returnStdout: true, script: "curl tasks-${GUID}-tasks-dev.apps.${CLUSTER}").trim()
-            echo "tasksRoute: " + tasksRoute
+            echo "tasksRoute: " + task
           }
         }
       }
