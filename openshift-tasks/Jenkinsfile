@@ -62,6 +62,7 @@ podTemplate(
       )}
 
 
+
       // Publish the built war file to Nexus
       stage('Publish to Nexus') {
         echo "Publish to Nexus"
@@ -79,6 +80,7 @@ podTemplate(
           openshift.selector("bc", "tasks").startBuild("--from-file=./target/openshift-tasks.war", "--wait=true")
           openshift.tag("tasks:latest", "tasks:${devTag}")
         }}}
+
       }
 
       // Deploy the built image to the Development Environment.
@@ -88,10 +90,7 @@ podTemplate(
         // TBD: Deploy to development Project
         //      Set Image, Set VERSION
         //      Make sure the application is running and ready before proceeding
-        script {
-        // Update the Image on the Development Deployment Config
-        openshift.withCluster() {
-          openshift.withProject("${GUID}-tasks-dev") {
+        script { openshift.withCluster() { openshift.withProject("${GUID}-tasks-dev") {
   
             //OpenShift 3:
             openshift.set("image", "dc/tasks", "tasks=docker-registry.default.svc:5000/${GUID}-tasks-dev/tasks:${devTag}")
@@ -110,6 +109,7 @@ podTemplate(
             }
           }
         }
+      }
       }
 
       // Copy Image to Nexus container registry
@@ -138,7 +138,7 @@ podTemplate(
         //      Make sure the application is running and ready before proceeding
         script{ openshift.withCluster() { openshift.withProject("${GUID}-tasks-prod") {
           def route = openshift.selector("route", "tasks").object()
-          activeApp = "${route.spec.to.name}"
+          activeApp = = "${route.spec.to.name}"
   
           echo "current active app: ${activeApp}"
           if(activeApp == "tasks-green") {
@@ -173,8 +173,7 @@ podTemplate(
          def route = openshift.selector("route/tasks").object()
          route.spec.to.name="${destApp}"
          openshift.apply(route)
-       }
-       }}
+       }}}
       }
     }
   }
