@@ -150,10 +150,10 @@ podTemplate(
         //      Set Image, Set VERSION
         //      Deploy into the other application
         //      Make sure the application is running and ready before proceeding
-        script{ openshift.withCluster() { 
-          openshift.withProject("${GUID}-tasks-prod") {
-          
-         activeApp = openshift.selector("route", "tasks").object().spec.to.name
+        script {
+          openshift.withCluster() {
+            openshift.withProject("${GUID}-tasks-prod") {
+              activeApp = openshift.selector("route", "tasks").object().spec.to.name
               if (activeApp == "tasks-green") {
                 destApp = "tasks-blue"
               }
@@ -178,9 +178,11 @@ podTemplate(
                 sleep 5
                 rc_prod = openshift.selector("rc", "${destApp}-${dc_version}").object()
               }
-        } 
+            }
+          }
+        }
       }
-      }
+
 
       stage('Switch over to new Version') {
         echo "Switching Production application to ${destApp}."
